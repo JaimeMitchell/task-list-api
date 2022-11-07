@@ -18,5 +18,5 @@ class Task(db.Model):#A model is a table in postgres
             id=self.task_id,
             title=self.title,
             description=self.description,
-            is_complete=True if self.completed_at == True else False)
+            is_complete=bool(self.completed_at))
 # stuff on the left is what the user sees and the stuff on the right is the class being instantiated by the database query
