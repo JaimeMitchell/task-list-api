@@ -98,14 +98,7 @@ def update_task(task_id):
     task.description = request_body["description"]
 
     db.session.commit()
-    return make_response(jsonify({
-        "task": {
-            "id": 1,
-            "title": "Updated Task Title",
-            "description": "Updated Test Description",
-            "is_complete": False
-        }
-    }), 200)
+    return {"task": task.to_dict()}, 200
 
 
 def slack_bot(task):
@@ -126,7 +119,7 @@ def mark_task_as_complete(task_id):
     task.completed_at = dt.datetime.now()
     db.session.commit()
     slack_bot(task)
-    return jsonify({"task": Task.to_dict(task)}, 200)
+    return jsonify({"task": task.to_dict()}), 200
 
 
 @tasks_bp.route("/<task_id>/mark_incomplete", strict_slashes=False, methods=["PATCH"])
