@@ -6,6 +6,7 @@ import datetime as dt
 import requests
 from dotenv import load_dotenv
 import os
+from sqlalchemy import select
 load_dotenv()
 # INSTANIATE BLUEPRINT FOR ROUTES
 tasks_bp = Blueprint("tasks", __name__, url_prefix="/tasks")
@@ -208,43 +209,31 @@ def delete_goals(goal_id):
     db.session.commit()
     return make_response(jsonify({"details": "Goal 1 \"Build a habit of going outside daily\" successfully deleted"}))
 
+
 @goals_bp.route("/<goal_id>/tasks", strict_slashes=False, methods=["POST"])
-def create_goals_list(goal_id):
+def create_list_task_ids_one_goal(goal_id):
     request_body = request.get_json()
-    goal = validate_model(Goal,goal_id)
-    task_list=[]
-    for task_id in request_body["task_ids"]:
-        task = validate_model(Task,task_id) 
-        task.goal = goal #id of the goal connected to Task .goal attribute that making the connection
-        task_list.append(task_id)
-    
-    db.session.commit()
-    
-    return jsonify({"id":goal.id, "task_ids":task_list}),200
-
-# {
-#   "id": 333,
-#   "title": "Build a habit of going outside daily",
-#   "tasks": [
-#     {
-#       "id": 999,
-#       "goal_id": 333,
-#       "title": "Go on my daily walk 🏞",
-#       "description": "Notice something new every day",
-#       "is_complete": false
-#     }
-#   ]
-# }
-@goals_bp.route("/<goal_id>/tasks", strict_slashes=False, methods=["GET"])
-def get_goal_list(goal_id):
     goal = validate_model(Goal, goal_id)
+    task_list = []
+    for task_id in request_body["task_ids"]:
+        task = validate_model(Task, task_id)
+        # id of the goal connected to Task .goal attribute that making the connection
+        task.goal = goal
+        task_list.append(task_id)
 
-    task_query = Task.query
+    db.session.commit()
 
-    tasks = task_query.all()
+    return jsonify({"id": goal.id, "task_ids": task_list}), 200
 
-    # appending each goal to dictionary
-    task_response = [task.to_dict() for task in tasks]
-    return {"id": goal.goal_id, "title" : goal.title, "tasks" : jsonify(task_response)}, 200
-    # return jsonify(task_response) {"id": goal.to_dict()}, 200
+
+@goals_bp.route("/<goal_id>/tasks", strict_slashes=False, methods=["GET"])
+def get_tasks_of_one_goal(goal_id):
+    goal = validate_model(Goal, goal_id)
+    tasks= Task.query.filter_by(goal=goal)
+    task_list=[task.to_dict() for task in tasks]
+    
+    goal_dict=goal.to_dict()
+    goal_dict["tasks"]=task_list
+    return make_response(jsonify(goal_dict)),200
+
 
