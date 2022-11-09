@@ -6,6 +6,8 @@ class Task(db.Model):#A model is a table in postgres
     title = db.Column(db.String)
     description = db.Column(db.String)
     completed_at = db.Column(db.DateTime, nullable=True)
+    goal_id= db.Column(db.Integer,db.ForeignKey('goal.id'), nullable = True)
+    goal=db.relationship("Goal",back_populates="tasks")
 
     @classmethod
     def from_dict(cls, data_dict): #given a response body, which is a json, it makes it an instance of a class
