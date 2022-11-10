@@ -229,11 +229,44 @@ def create_list_task_ids_one_goal(goal_id):
 @goals_bp.route("/<goal_id>/tasks", strict_slashes=False, methods=["GET"])
 def get_tasks_of_one_goal(goal_id):
     goal = validate_model(Goal, goal_id)
-    tasks= Task.query.filter_by(goal=goal)
-    task_list=[task.to_dict() for task in tasks]
-    
-    goal_dict=goal.to_dict()
-    goal_dict["tasks"]=task_list
-    return make_response(jsonify(goal_dict)),200
+    # 'goal' left side of = is KEY WORD PARAM in Task model's parameter 'goal' which is the relationship() and backpopulates Goal with Tasks. IT MUST BE CALLED GOAL IF THAT'S WHAT I NAMED IT IN THE TASK MODEL. 'goal' on the right side of = is the ARGUMENT validate_model(Goal,goal_id)
+    tasks = Task.query.filter_by(goal=goal)
+    task_list = [task.to_dict() for task in tasks]
+
+    goal_dict = goal.to_dict()
+    goal_dict["tasks"] = task_list
+    return make_response(jsonify(goal_dict)), 200
 
 
+'''How to store data in database using postman:
+In POST, go to 'body' chose 'raw' then in drop down menu chose 'json'
+Add tasks first:
+
+For adding Tasks to Goals, send a POST request to /goals/1/tasks with this request body:
+Request Body:
+{
+  "task_ids": [1, 2, 3]
+}
+
+or 
+create a task in a list more directly in one POST with endpoint:
+{
+  "title": "Build a habit of going outside daily",
+  "tasks": [
+    {
+      "goal_id": 1,
+      "title": "Go on my daily walk 🏞",
+      "description": "Notice something new every day",
+      "is_complete": false
+    }
+  ]
+}
+
+To mark complete:
+set to PATCH, no request body needed
+https://jaime-task-list-api.herokuapp.com/tasks/1/mark_complete
+
+To mark incompete:
+set to PATCH, no request body needed
+https://jaime-task-list-api.herokuapp.com/tasks/1/mark_incomplete
+'''
