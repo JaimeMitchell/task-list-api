@@ -239,17 +239,41 @@ def get_tasks_of_one_goal(goal_id):
 
 
 '''How to store data in database using postman:
-In POST, go to 'body' chose 'raw' then in drop down menu chose 'json'
-Add tasks first:
 
-For adding Tasks to Goals, send a POST request to /goals/1/tasks with this request body:
+To add tasks, send a POST to
+https://jaime-task-list-api.herokuapp.com/goals
+
+In POST, go to 'body' chose 'raw' then in drop down menu chose 'json'
+with a HTTP request body:
+
+{
+  "title": "A Brand New Task",
+  "description": "Test Description",
+  "completed_at": null
+}
+
+To get all tasks send a GET request to https://jaime-task-list-api.herokuapp.com/tasks:
+To get all tasks send a GET request to https://jaime-task-list-api.herokuapp.com/tasks/<task_id>/
+
+For adding goals, send a POST to 
+https://jaime-task-list-api.herokuapp.com/goals
+With a HTTP request body:
+
+{
+  "title": "My New Goal"
+}
+
+To get all tasks send a GET request to https://jaime-task-list-api.herokuapp.com/goals:
+To get a task for ONE task send a GET to https://jaime-task-list-api.herokuapp.com/goals/<goal_id>:
+
+For adding a list of Tasks to Goals, send a POST request to https://jaime-task-list-api.herokuapp.com/goals/1/tasks:
 Request Body:
 {
   "task_ids": [1, 2, 3]
 }
 
 or 
-create a task in a list more directly in one POST with endpoint:
+create a task in a list more directly in one GET with endpoint https://jaime-task-list-api.herokuapp.com/goals/1/tasks:
 {
   "title": "Build a habit of going outside daily",
   "tasks": [
@@ -262,6 +286,14 @@ create a task in a list more directly in one POST with endpoint:
   ]
 }
 
+To put tasks in ascending order:
+Set to GET, no request body needed
+https://jaime-task-list-api.herokuapp.com/tasks?sort=asc
+
+To put tasks in descending order:
+Set to GET, no request body needed
+https://jaime-task-list-api.herokuapp.com/tasks?sort=desc 
+
 To mark complete:
 set to PATCH, no request body needed
 https://jaime-task-list-api.herokuapp.com/tasks/1/mark_complete
@@ -269,4 +301,14 @@ https://jaime-task-list-api.herokuapp.com/tasks/1/mark_complete
 To mark incompete:
 set to PATCH, no request body needed
 https://jaime-task-list-api.herokuapp.com/tasks/1/mark_incomplete
+
+future features would add similar route features to goals
+
+Other CRUD routes:
+UPDATE /tasks/<tasks_id>
+DELETE /tasks/<tasks_id>
+UPDATE /goals/<goal_id>
+DELETE /goals/<goal_id>
+
+future docstring instructions will include how to send response bodies to a clients Slack API channel.
 '''
