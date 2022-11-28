@@ -119,7 +119,8 @@ def create_task():
         }, 400))
     db.session.add(new_task)
     db.session.commit()
-    return make_response(jsonify({'task': {'description': 'Test Description', 'id': 1, 'is_complete': False, 'title': 'A Brand New Task'}}), 201)
+    
+    return make_response(jsonify({"task": new_task.to_dict()}), 201)
 
 
 @tasks_bp.route("/", strict_slashes=False, methods=["GET"])
@@ -232,10 +233,7 @@ def create_goal():
     db.session.add(new_goal)
     db.session.commit()
     return make_response(jsonify({
-        "goal": {
-            "id": 1,
-            "title": "My New Goal"
-        }
+        "goal": new_goal.to_dict()
     }), 201)
 
 
@@ -269,11 +267,9 @@ def update_goal(goal_id):
 
     db.session.commit()
     return make_response(jsonify({
-        "goal": {
-            "id": 1,
-            "title": "Updated Goal Title",
-
-        }
+        "goal":
+            goal.to_dict()
+    
     }), 200)
 
 
@@ -283,7 +279,7 @@ def delete_goals(goal_id):
     goal = validate_model(Goal, goal_id)
     db.session.delete(goal)
     db.session.commit()
-    return make_response(jsonify({"details": "Goal 1 \"Build a habit of going outside daily\" successfully deleted"}))
+    return make_response(jsonify({"details":f'Goal {goal.id} "{goal.title}" successfully deleted'}))
 
 
 @goals_bp.route("/<goal_id>/tasks", strict_slashes=False, methods=["POST"])

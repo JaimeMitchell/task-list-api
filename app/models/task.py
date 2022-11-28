@@ -10,7 +10,7 @@ class Task(db.Model):#A model is a table in postgres
     goal=db.relationship("Goal",back_populates="tasks",lazy=True)
 
     @classmethod
-    def from_dict(cls, data_dict): #given a response body, which is a json, it makes it an instance of a class
+    def from_dict(cls, data_dict): #given a request body, which is sent as json, and read as a dictionary, we build an instance of a class
         
         return cls(title=data_dict["title"], # brackets are called "sub" 
                    description=data_dict["description"])
