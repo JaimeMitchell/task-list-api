@@ -12,7 +12,7 @@ class Task(db.Model):#A model is a table in postgres
     @classmethod
     def from_dict(cls, data_dict): #given a request body, which is sent as json, and read as a dictionary, we build an instance of a class
         
-        return cls(title=data_dict["title"], # brackets are called "sub" 
+        return cls(title=data_dict["title"],
                    description=data_dict["description"])
 
     def to_dict(self):
